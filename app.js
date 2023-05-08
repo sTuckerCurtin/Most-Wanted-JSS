@@ -40,8 +40,7 @@ function searchPeopleDataSet(people) {
             results = searchByName(people);
             break;
         case 'traits':
-            //! TODO
-            // results = searchByTraits(people);
+            results = searchByTraits(people);
             break;
         default:
             return searchPeopleDataSet(people);
@@ -49,6 +48,62 @@ function searchPeopleDataSet(people) {
 
     return results;
 }
+
+function searchByTraits(people) {
+    let filteredPeople = people;
+    let searchCriteria = [];
+  
+    while (searchCriteria.length < 5) {
+      const trait = prompt(`Please enter a trait to search for (${5 - searchCriteria.length} remaining): Height, Weight, Gender, Occupation or Eye Color.`);
+  
+      switch (trait.toLowerCase()) {
+        case 'height':
+          const height = parseInt(prompt('Enter the persons height: in inches.'));
+          filteredPeople = filteredPeople.filter(person => person.height === height);
+          searchCriteria.push(`height = ${height}"`);
+          break;
+        case 'weight':
+          const weight = parseInt(prompt('Enter the persons: weight in pounds.'));
+          filteredPeople = filteredPeople.filter(person => person.weight === weight);
+          searchCriteria.push(`weight = ${weight}`);
+          break;
+        case 'gender':
+          const gender = prompt('Enter the persons gender: male or female.');
+          filteredPeople = filteredPeople.filter(person => person.gender.toLowerCase() === gender.toLowerCase());
+          searchCriteria.push(`gender = ${gender.toLowerCase()}`);
+          break;
+        case 'occupation':
+          const occupation = prompt('Enter the persons occupation.');
+          filteredPeople = filteredPeople.filter(person => person.occupation.toLowerCase() === occupation.toLowerCase());
+          searchCriteria.push(`occupation = ${occupation.toLowerCase()}`);
+          break;
+        case 'eye color':
+          const eyeColor = prompt('Enter the persons eye color.');
+          filteredPeople = filteredPeople.filter(person => person.eyeColor.toLowerCase() === eyeColor.toLowerCase());
+          searchCriteria.push(`eye color = ${eyeColor.toLowerCase()}`);
+          break;
+        default:
+          alert('Invalid trait entered.');
+      }
+  
+      if (filteredPeople.length === 0) {
+        alert('No matches found.');
+        return [];
+      } else if (filteredPeople.length === 1) {
+        alert(`1 match found: ${filteredPeople[0].firstName} ${filteredPeople[0].lastName}`);
+        return filteredPeople;
+      }
+  
+      const continueSearch = prompt(`Results filtered by ${searchCriteria.join(', ')}.Do you want to continue searching? (y/n)`);
+      if (continueSearch.toLowerCase() === 'n') {
+        return filteredPeople;
+      }
+    }
+  
+    alert('Maximum of 5 search criteria reached.');
+    return filteredPeople;
+  }
+  
 
 function searchById(people) {
     const idToSearchForString = prompt('Please enter the id of the person you are searching for.');
