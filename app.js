@@ -54,7 +54,10 @@ function searchByTraits(people) {
     let searchCriteria = [];
   
     while (searchCriteria.length < 5) {
-      const trait = prompt(`Please enter a trait to search for (${5 - searchCriteria.length} remaining): Height, Weight, Gender, Occupation or Eye Color.`);
+      const trait = validatedPrompt("Please enter a trait to search for:", 
+      ["height", "weight", "gender", "occupation", "eye color"]
+      );
+      
   
       switch (trait.toLowerCase()) {
         case 'height':
@@ -122,24 +125,21 @@ function searchByName(people) {
 function mainMenu(person, people) {
 
     const mainMenuUserActionChoice = validatedPrompt(
-        `Person: ${person.firstName} ${person.lastName}\n\nDo you want to know their full information, family, or descendants?`,
+        `Person: ${person.firstName} ${person.lastName} Do you want to know their full info, family, or descendants?`,
         ['info', 'family', 'descendants', 'quit']
     );
 
     switch (mainMenuUserActionChoice) {
         case "info":
-            //! TODO
-            // displayPersonInfo(person);
+            displayPersonInfo(person);
             break;
         case "family":
-            //! TODO
-            // let personFamily = findPersonFamily(person, people);
-            // displayPeople('Family', personFamily);
+            let personFamily = findPersonFamily(person, people);
+            displayPeople('Family', personFamily);
             break;
         case "descendants":
-            //! TODO
-            // let personDescendants = findPersonDescendants(person, people);
-            // displayPeople('Descendants', personDescendants);
+            let personDescendants = findPersonDescendants(person, people);
+            displayPeople('Descendants', personDescendants);
             break;
         case "quit":
             return;
@@ -188,3 +188,18 @@ function exitOrRestart(people) {
     }
 
 }
+
+
+function displayPersonInfo(person){
+        let infoForPerson = "First Name: " + person.firstName+ "\n";
+        infoForPerson += "Last Name: " + person.lastName+ "\n";
+        infoForPerson += "Gender: " + person.gender+ "\n";
+        infoForPerson += "Weight: " + person.weight+ "\n";
+        infoForPerson += "Eye Color: " + person.eyeColor+ "\n";
+        infoForPerson += "Height: " + person.height+ "\n";
+        infoForPerson += "Occupation: "+ person.occupation+ "\n";
+        alert(infoForPerson)
+        
+}
+
+            
