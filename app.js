@@ -151,9 +151,10 @@ function mainMenu(person, people) {
 }
 
 function displayPeople(displayTitle, peopleToDisplay) {
-    const formatedPeopleDisplayText = peopleToDisplay.map(person => `${person.firstName} ${person.lastName}`).join('\n');
+    const formatedPeopleDisplayText = peopleToDisplay.map(person => `${person.firstName} ${person.lastName} - ${person.relationship}`).join('\n');
     alert(`${displayTitle}\n\n${formatedPeopleDisplayText}`);
 }
+
 
 function validatedPrompt(message, acceptableAnswers) {
     acceptableAnswers = acceptableAnswers.map(aa => aa.toLowerCase());
@@ -202,4 +203,62 @@ function displayPersonInfo(person){
         
 }
 
-            
+function findPersonFamily(person, people){
+  let personFamily = [];
+  for (let i =0; i < people.length; i++){
+    if (people[i].lastName === person.lastName && people[i] !==person){
+        personFamily.push(people[i])
+    }
+  }
+  for (let i=0; i < personFamily.length; i++){
+    let relationship = " ";
+    if(personFamily[i].currentSpouse === person.id){
+        relationship = "Partner"
+    }
+    else if(person.parents.includes(personFamily[i].id)){
+        relationship = "Parent"
+    }
+    else if(personFamily[i].parents.includes(person.id)){
+        relationship = "Child"
+    }
+    else if(person.gender === "male" || person.gender == "female" && personFamily[i].gender === "male" || person.gender === "female" || person.gender ==="male" && personFamily[i].gender === "female"){
+        relationship = "Sibling"
+    }
+   
+    personFamily[i].relationship = relationship 
+  }
+    displayPeople (`Family members of ${person.firstName} ${person.lastName} `,personFamily);
+}
+
+
+// function findPersonDescendants(person, people) {
+//   let personDescendants = [];
+//   for (let i = 0; i < people.length; i++) {
+//     let relationship;
+//     if (people[i].parents.includes(person.id)) {
+//       relationship = "Child";
+//     } else if (people.some(person => person.parents.includes(people[i].id) && person.parents.includes(person.id))) {
+//       relationship = "Grandchild";
+//       personDescendants.push(people[i]);
+//     }
+//     if (relationship) {
+//       people[i].relationship = relationship;
+//     }
+//   }
+//   displayPeople(`Descendants of ${person.firstName} ${person.lastName}`, personDescendants);
+// }
+function findPersonDescendants(person, people) {
+    let personDescendants = [];
+    
+    function findDescendants(parent, people) {
+      let children = people.filter(person => person.parents.includes(parent.id));
+      for (let child of children) {
+        personDescendants.push(child);
+        findDescendants(child, people);
+      }
+    }
+  
+    findDescendants(person, people);
+    displayPeople(`Descendants of ${person.firstName} ${person.lastName} ${person.relationship}`, personDescendants);
+  }
+  
