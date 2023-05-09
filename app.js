@@ -231,34 +231,16 @@ function findPersonFamily(person, people){
 }
 
 
-// function findPersonDescendants(person, people) {
-//   let personDescendants = [];
-//   for (let i = 0; i < people.length; i++) {
-//     let relationship;
-//     if (people[i].parents.includes(person.id)) {
-//       relationship = "Child";
-//     } else if (people.some(person => person.parents.includes(people[i].id) && person.parents.includes(person.id))) {
-//       relationship = "Grandchild";
-//       personDescendants.push(people[i]);
-//     }
-//     if (relationship) {
-//       people[i].relationship = relationship;
-//     }
-//   }
-//   displayPeople(`Descendants of ${person.firstName} ${person.lastName}`, personDescendants);
-// }
-function findPersonDescendants(person, people) {
+function findPersonDescendants(person, people){
     let personDescendants = [];
-    
+
     function findDescendants(parent, people) {
-      let children = people.filter(person => person.parents.includes(parent.id));
-      for (let child of children) {
-        personDescendants.push(child);
-        findDescendants(child, people);
-      }
+        let children = people.filter(person => person.parents.includes(parent.id));
+        for(let child of children) {
+            personDescendants.push(child);
+            findDescendants(child, people);
+        }
     }
-  
     findDescendants(person, people);
-    displayPeople(`Descendants of ${person.firstName} ${person.lastName} ${person.relationship}`, personDescendants);
-  }
-  
+    displayPeople(`Descendants of ${person.firstName} ${person.lastName} `, personDescendants);
+}
