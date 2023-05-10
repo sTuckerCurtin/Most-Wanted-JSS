@@ -58,31 +58,33 @@ function searchByTraits(people) {
       ["height", "weight", "gender", "occupation", "eye color"]
       );
       
+     
+
   
       switch (trait.toLowerCase()) {
         case 'height':
           const height = parseInt(prompt('Enter the persons height: in inches.'));
-          filteredPeople = filteredPeople.filter(person => person.height === height);
+          filteredPeople = filteredPeople.filter(function(person){return person.height === height});
           searchCriteria.push(`height = ${height}"`);
           break;
         case 'weight':
           const weight = parseInt(prompt('Enter the persons: weight in pounds.'));
-          filteredPeople = filteredPeople.filter(person => person.weight === weight);
+          filteredPeople = filteredPeople.filter(function(person){return person.weight === weight});
           searchCriteria.push(`weight = ${weight}`);
           break;
         case 'gender':
           const gender = prompt('Enter the persons gender: male or female.');
-          filteredPeople = filteredPeople.filter(person => person.gender.toLowerCase() === gender.toLowerCase());
+          filteredPeople = filteredPeople.filter(function(person){return person.gender.toLowerCase() === gender.toLowerCase()});
           searchCriteria.push(`gender = ${gender.toLowerCase()}`);
           break;
         case 'occupation':
           const occupation = prompt('Enter the persons occupation.');
-          filteredPeople = filteredPeople.filter(person => person.occupation.toLowerCase() === occupation.toLowerCase());
+          filteredPeople = filteredPeople.filter(function(person){return person.occupation.toLowerCase() === occupation.toLowerCase()});
           searchCriteria.push(`occupation = ${occupation.toLowerCase()}`);
           break;
         case 'eye color':
           const eyeColor = prompt('Enter the persons eye color.');
-          filteredPeople = filteredPeople.filter(person => person.eyeColor.toLowerCase() === eyeColor.toLowerCase());
+          filteredPeople = filteredPeople.filter(function(person){return person.eyeColor.toLowerCase() === eyeColor.toLowerCase()});
           searchCriteria.push(`eye color = ${eyeColor.toLowerCase()}`);
           break;
         default:
@@ -134,8 +136,7 @@ function mainMenu(person, people) {
             displayPersonInfo(person);
             break;
         case "family":
-            let personFamily = findPersonFamily(person, people);
-            displayPeople('Family', personFamily);
+            findPersonFamily(person, people);
             break;
         case "descendants":
             let personDescendants = findPersonDescendants(person, people);
@@ -151,7 +152,7 @@ function mainMenu(person, people) {
 }
 
 function displayPeople(displayTitle, peopleToDisplay) {
-    const formatedPeopleDisplayText = peopleToDisplay.map(person => `${person.firstName} ${person.lastName} - ${person.relationship}`).join('\n');
+    const formatedPeopleDisplayText = peopleToDisplay.map(person => `${person.firstName} ${person.lastName} `).join('\n');
     alert(`${displayTitle}\n\n${formatedPeopleDisplayText}`);
 }
 
@@ -203,39 +204,46 @@ function displayPersonInfo(person){
         
 }
 
-function findPersonFamily(person, people){
-  let personFamily = [];
-  for (let i =0; i < people.length; i++){
-    if (people[i].lastName === person.lastName && people[i] !==person){
-        personFamily.push(people[i])
+
+
+
+  function findPersonFamily(targetPerson, people) {
+    const family = people.filter(function(person) {
+      return person.lastName === targetPerson.lastName && person !== targetPerson;
+    });
+  
+    const familyWithRelationships = family.map(function(person) {
+      let relationship = "";
+      if (person.currentSpouse === targetPerson.id) {
+        relationship = "Partner";
+      } else if (person.parents.includes(targetPerson.id)) {
+        relationship = "Parent";
+      } else if (targetPerson.parents.includes(person.id)) {
+        relationship = "Child";
+      }  else if ((person.gender === "male" || person.gender === "female") && (targetPerson.gender === "female" || targetPerson.gender === "male")) {
+        relationship = "Sibling";
     }
-  }
-  for (let i=0; i < personFamily.length; i++){
-    let relationship = " ";
-    if(personFamily[i].currentSpouse === person.id){
-        relationship = "Partner"
+    
+      person.relationship = relationship;
+      return person;
+    });
+    const familyNamesWithRelationships = familyWithRelationships.map(function(person) {
+        return `${person.firstName} ${person.lastName} (${person.relationship})`;
+      });
+    
+      alert(`Family members of ${targetPerson.firstName} ${targetPerson.lastName}: ${familyNamesWithRelationships}`);
     }
-    else if(person.parents.includes(personFamily[i].id)){
-        relationship = "Parent"
-    }
-    else if(personFamily[i].parents.includes(person.id)){
-        relationship = "Child"
-    }
-    else if(person.gender === "male" || person.gender == "female" && personFamily[i].gender === "male" || person.gender === "female" || person.gender ==="male" && personFamily[i].gender === "female"){
-        relationship = "Sibling"
-    }
-   
-    personFamily[i].relationship = relationship 
-  }
-    displayPeople (`Family members of ${person.firstName} ${person.lastName} `,personFamily);
-}
+  
+
+
+
 
 
 function findPersonDescendants(person, people){
     let personDescendants = [];
 
     function findDescendants(parent, people) {
-        let children = people.filter(person => person.parents.includes(parent.id));
+        let children = people.filter(function(person){return person.parents.includes(parent.id)});
         for(let child of children) {
             personDescendants.push(child);
             findDescendants(child, people);
